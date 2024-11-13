@@ -28,6 +28,6 @@ models = [
         delegacion VARCHAR(200) NOT NULL,
         fecha_eliminacion TIMESTAMP,
         id_usuario VARCHAR(200) NOT NULL,
-        CONSTRAINT fk_domicio FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+        CONSTRAINT fk_domicio FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
     ) ENGINE = InnoDB;'''
 ]

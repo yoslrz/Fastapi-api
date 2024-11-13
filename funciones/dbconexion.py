@@ -1,9 +1,32 @@
+import json
 import uuid
-from funciones.funciones import generar_sql
+from funciones.funciones import generar_hash_sha256
 from funciones.models import models
 from funciones.models_object import Acceso
 import mysql.connector
 
+def generar_sql(tabla:str,modelo:object)->str: 
+    """Funcion para generar el sql
+
+    Args:
+        tabla (str): nombre de la tabla
+        modelo (object): modelo de datos a ingresar
+
+    Returns:
+        str: sql
+    """ 
+    valores_str =[]
+    valores = list(dict(modelo).values())
+    campos = list(dict(modelo))
+    for i in valores:
+        if isinstance(i, dict) or isinstance(i, list): 
+            i = f"{json.dumps(i)}"
+        i= f"'{str(i)}'" 
+        valores_str.append(i)
+    texto_valores = f'({",".join(valores_str)})'
+    texto_campos = f'({",".join(campos)})'
+    sql = f"INSERT INTO {tabla} {texto_campos} VALUES {texto_valores}"
+    return sql 
     
 class MiObjetoMySQL:
     def __init__(self, host: str = '127.0.0.1', user: str = "root", password: str = "12345678"):
@@ -30,7 +53,7 @@ class MiObjetoMySQL:
         print(self.esta_vacio("accesos"))
     
         if self.esta_vacio("accesos"):
-            info_acceso = Acceso(**{"id":str(uuid.uuid4()),"correo":"correo@gmail.com","password":"pass123","rol":"Admin"})
+            info_acceso = Acceso(**{"id":str(uuid.uuid4()),"correo":"correo@gmail.com","password":generar_hash_sha256("pass123"),"rol":"Admin"})
             print(self.ingreso_registro("accesos",dict(info_acceso)))
 
 
@@ -113,7 +136,7 @@ class MiObjetoMySQL:
             sql = f"SELECT {campos} FROM {tabla} "
         else:
             sql = f"SELECT {campos} FROM {tabla} WHERE {condicion}"
-        # print(sql)
+        print(sql)
         if aux_c:
             sql = sql+aux_c
         try:
@@ -126,6 +149,17 @@ class MiObjetoMySQL:
             return Exception()
         return info
    
+    def elimina_registro(self,tabla:str,condicion:str)->bool|Exception:
+        sql = f"DELETE FROM {tabla} WHERE {condicion}"
+        # print(sql)
+        self.cursor.execute("BEGIN")
+        try:
+            self.cursor.execute(sql)
+            self.conexion.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return Exception()
 
 
 

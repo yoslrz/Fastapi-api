@@ -20,3 +20,16 @@ class Usuarios(BaseModel):
     colonia:str
     codigo_postal:str
     delegacion:str
+
+class UsuarioEdit(BaseModel):
+    nombre:str
+    apellido_paterno:str
+    apellido_materno:str|bool=False
+    curp:str
+    rfc:str
+
+class Domicilio(BaseModel):
+    calle:str
+    colonia:str
+    codigo_postal:str
+    delegacion:str
