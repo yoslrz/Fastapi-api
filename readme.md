@@ -11,8 +11,8 @@
     1. Colonar el repositrorio 
     2. Crear un entorno virtual 
         comando en windows: python -m venv venv, donde el segundo venv es el nombre del entorno virtual
-    3. Activar entorno virtual
-        comando: 
+    3. Activar entorno virtual en windows
+        comando: {nombre_entorno_virtual}/Scripts/activate
     4. Instalar librerias y framework con el comando
         pip install -r requirements.txt
     5. Cuando se acabe de instalar ejecutaremos el comando 
